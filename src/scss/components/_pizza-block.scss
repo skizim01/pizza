@@ -1,13 +1,18 @@
-@import "./src/scss/variables";
+@import '../variables';
 
 .pizza-block {
   width: 280px;
   text-align: center;
-  margin: 20px 0px 20px 65px;
+  margin-bottom: 65px;
+  transition: all 0.2s ease-in-out;
 
+  &:hover {
+    transform: scale(1.03);
+  }
 
-  &:not(:nth-of-type(4n)) {
-    margin-right: 35px;
+  &-wrapper {
+    display: flex;
+    justify-content: center;
   }
 
   &__image {

@@ -1,38 +1,37 @@
 import { useState } from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {setCategory, setSortType} from "../../store/PizzaSlice";
 
-function SortItem({ category, setCategory, sortType, setSortType }) {
-  const categoryArr = [
-    "Все",
-    "Мясные",
-    "Вегетарианская",
-    "Гриль",
-    "Острые",
-    "Закрытые",
-  ];
+function SortItem() {
+  const {category, sortTypes, currentCategory , currentSortType } = useSelector(state => state.pizzaReducer)
+  const dispatch = useDispatch()
+
+
   const [showPopUp, setShowPopUp] = useState("none");
 
-  const sortTypes = [
-    { title: "популярності", value: "rating" },
-    { title: "ціна", value: "price" },
-    { title: "алфавіту", value: "title" },
-  ];
 
-  function onClick(index) {
-    setCategory(index);
-  }
-
-  // {console.log(sortType)}
-
-
-  const renderCategory = categoryArr.map((c, i) => (
+  const renderCategory = category.map((c, i) => (
     <li
       key={c}
-      onClick={() => onClick(i)}
-      className={category === i ? "active" : ""}
+      onClick={() => dispatch(setCategory(i))}
+      className={currentCategory === i ? "active" : ""}
     >
       {c}
     </li>
   ));
+
+  const renderSortType = sortTypes.map((e) => (
+      <li
+          key={e.title}
+          onClick={() => {
+            dispatch(setSortType(e))
+            setShowPopUp("none")
+          }}
+          className={currentSortType.value === e.value ? "active" : ""}
+      >
+        {e.title}
+      </li>
+  ))
 
   return (
     <>
@@ -56,27 +55,16 @@ function SortItem({ category, setCategory, sortType, setSortType }) {
             </svg>
             <b>Сортировка по:</b>
 
-            <span>{sortType.title}</span>
+            <span>{currentSortType.title}</span>
           </div>
           <div className="sort__popup" style={{ display: `${showPopUp}` }}>
             <ul>
-              {sortTypes.map((e) => (
-                <li
-                  key={e.title}
-                  onClick={() => {
-                    setSortType(e);
-                    setShowPopUp("none");
-                  }}
-                  className={sortType.value === e.value ? "active" : ""}
-                >
-                  {e.title}
-                </li>
-              ))}
+              {renderSortType}
             </ul>
           </div>
         </div>
       </div>
-      <h2 className="content__title">Все пиццы</h2>
+      <h2 className="content__title">{category[currentCategory]} пиццы</h2>
     </>
   );
 }

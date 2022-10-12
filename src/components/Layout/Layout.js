@@ -1,6 +1,6 @@
 import Header from "../Header/Header";
 import SortItem from "../SortItem/SortItem";
-import { Outlet } from "react-router";
+import {Outlet, Route, Routes, useRoutes} from "react-router";
 
 function Layout({ forSort }) {
   return (
@@ -9,7 +9,9 @@ function Layout({ forSort }) {
         <Header />
         <div className="content">
           <div className="container">
-            <SortItem {...forSort} />
+            {/*<Routes>*/}
+            {/*  <Route index element={<SortItem {...forSort} />} />*/}
+            {/*</Routes>*/}
             <Outlet />
           </div>
         </div>
@@ -18,4 +20,8 @@ function Layout({ forSort }) {
   );
 }
 
+
+
 export default Layout;
+
+
