@@ -4,7 +4,6 @@ export const getPizza = createAsyncThunk(
   "pizza/get",
   async function (_, { rejectWithValue, dispatch,getState }) {
     try {
-      console.log( getState().pizzaReducer.currentCategory)
       const category =  getState().pizzaReducer.currentCategory
       const res = await fetch(`https://633d5bca7e19b178290cb6d2.mockapi.io/pizzas${category===0?'':`?category=${category-1}`}`);
       if (!res.ok) {
@@ -53,6 +52,7 @@ const PizzaSlice = createSlice({
   },
   reducers: {
     setSortType(state, action) {
+      console.log(state)
       state.currentSortType = action.payload;
       state.pagination.page = 1
     },
@@ -60,7 +60,6 @@ const PizzaSlice = createSlice({
       state.currentCategory = action.payload;
     },
     setPagination(state, action) {
-      console.log(action)
       state.pagination = action.payload;
     },
     setPage(state, action) {

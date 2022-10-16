@@ -1,9 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addPizza } from "../../../store/cartSlice";
 
-function PizzaItem({ imageUrl, title, types, sizes, price }) {
-  const [Gtype, setType] = useState();
-  const [Gsize, setSize] = useState();
+function PizzaItem({ id, imageUrl, title, types, sizes, price }) {
+  const [Gtype, setType] = useState(types[0]);
+  const [Gsize, setSize] = useState(sizes[0]);
+  const dispatch = useDispatch();
+  const pizzas = useSelector((state) => state.cartReducer.pizzas);
+  const [inCart, setInCart] = useState(
+    pizzas.find(
+      (pizza) => pizza.id === id && pizza.type === Gtype && pizza.size === Gsize
+    )
+  );
 
+  useEffect(() => {
+    setInCart(
+      pizzas.find(
+        (pizza) =>
+          pizza.id === id && pizza.type === Gtype && pizza.size === Gsize
+      )
+    );
+    console.log(pizzas);
+  }, [Gsize, Gtype]);
   return (
     <div className="pizza-block">
       <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
@@ -12,8 +30,10 @@ function PizzaItem({ imageUrl, title, types, sizes, price }) {
         <ul>
           {types.map((type) => (
             <li
-                key={type}
-              onClick={() => setType(type)}
+              key={type}
+              onClick={() => {
+                setType(type);
+              }}
               className={Gtype === type ? "active" : ""}
             >
               {type ? "традиційне" : "тонке"}
@@ -23,9 +43,10 @@ function PizzaItem({ imageUrl, title, types, sizes, price }) {
         <ul>
           {sizes.map((size) => (
             <li
-                key={size}
-
-                onClick={() => setSize(size)}
+              key={size}
+              onClick={() => {
+                setSize(size);
+              }}
               className={Gsize === size ? "active" : ""}
             >
               {size} см
@@ -35,7 +56,13 @@ function PizzaItem({ imageUrl, title, types, sizes, price }) {
       </div>
       <div className="pizza-block__bottom">
         <div className="pizza-block__price">{`від ${price}`}</div>
-        <div className="button button--outline button--add">
+        <div
+          className="button button--outline button--add"
+          onClick={() => {
+            console.log("click");
+            dispatch(addPizza({ id, type: Gtype, size: Gsize }));
+          }}
+        >
           <svg
             width="12"
             height="12"
@@ -49,7 +76,7 @@ function PizzaItem({ imageUrl, title, types, sizes, price }) {
             />
           </svg>
           <span>Добавить</span>
-          <i>2</i>
+          <i>{inCart ? inCart.count : 0}</i>
         </div>
       </div>
     </div>
