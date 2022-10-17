@@ -1,19 +1,24 @@
 import React from "react";
+import {decrementPizza, incrementPizza, removePizza} from "../../store/cartSlice";
+import {useDispatch} from "react-redux";
 
-const CartItem = () => {
+const CartItem = ({ title, id, count, type, size, imgURL, price }) => {
+    console.log(imgURL)
+
+    const dispatch = useDispatch()
   return (
     <div class="cart__item">
       <div class="cart__item-img">
-        <img class="pizza-block__image" src={"/"} alt="Pizza" />
+        <img class="pizza-block__image" src={imgURL} alt="Pizza" />
       </div>
       <div class="cart__item-info">
-        <h3>{"pizza"}</h3>
+        <h3>{title}</h3>
         <p>
-          {"meet"}, {24} см.
+          {type ? "тонка" : "традиційна"}, {size} см.
         </p>
       </div>
       <div class="cart__item-count">
-        <div class="button button--outline button--circle cart__item-count-minus">
+        <div class="button button--outline button--circle cart__item-count-minus" onClick={()=>dispatch(decrementPizza(id))}>
           <svg
             width="10"
             height="10"
@@ -30,9 +35,9 @@ const CartItem = () => {
               fill="#EB5A1E"
             ></path>
           </svg>
-        </div>
-        <b>{"2"}</b>
-        <div class="button button--outline button--circle cart__item-count-plus">
+        </div >
+        <b>{count}</b>
+        <div class="button button--outline button--circle cart__item-count-plus" onClick={()=>dispatch(incrementPizza(id))}>
           <svg
             width="10"
             height="10"
@@ -52,9 +57,15 @@ const CartItem = () => {
         </div>
       </div>
       <div class="cart__item-price">
-        <b>{"4"} ₽</b>
+        <b>{price * count} ₴</b>
       </div>
-      <div class="cart__item-remove">
+      <div
+        class="cart__item-remove"
+        onClick={() => {
+            console.log('click')
+          dispatch(removePizza(id));
+        }}
+      >
         <div class="button button--outline button--circle">
           <svg
             width="10"

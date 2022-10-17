@@ -1,27 +1,22 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPizza } from "../../../store/cartSlice";
+import { addPizza, incrementPizza } from "../../../store/cartSlice";
 
 function PizzaItem({ id, imageUrl, title, types, sizes, price }) {
   const [Gtype, setType] = useState(types[0]);
   const [Gsize, setSize] = useState(sizes[0]);
   const dispatch = useDispatch();
   const pizzas = useSelector((state) => state.cartReducer.pizzas);
-  const [inCart, setInCart] = useState(
-    pizzas.find(
-      (pizza) => pizza.id === id && pizza.type === Gtype && pizza.size === Gsize
-    )
-  );
+  const [inCart, setInCart] = useState();
 
   useEffect(() => {
     setInCart(
       pizzas.find(
         (pizza) =>
-          pizza.id === id && pizza.type === Gtype && pizza.size === Gsize
+          pizza.pizzaId === id && pizza.type === Gtype && pizza.size === Gsize
       )
     );
-    console.log(pizzas);
-  }, [Gsize, Gtype]);
+  }, [Gsize, Gtype, pizzas]);
   return (
     <div className="pizza-block">
       <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
@@ -55,12 +50,22 @@ function PizzaItem({ id, imageUrl, title, types, sizes, price }) {
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">{`від ${price}`}</div>
+        <div className="pizza-block__price">{`від ${price} ₴`}</div>
         <div
           className="button button--outline button--add"
           onClick={() => {
             console.log("click");
-            dispatch(addPizza({ id, type: Gtype, size: Gsize }));
+            inCart
+              ? dispatch(incrementPizza(inCart.id))
+              : dispatch(
+                  addPizza({
+                    id,
+                    type: Gtype,
+                    size: Gsize,
+                      imgURL:imageUrl,
+                      price:price, title
+                  })
+                );
           }}
         >
           <svg
